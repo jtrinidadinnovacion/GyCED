@@ -1,0 +1,81 @@
+<div class="pantalla fondo-gyced">
+  <header class="cabecera">
+    <img class="logo" src="img/icono.png" alt="" />
+    <h1 class="titulo-pagina">
+      <span class="ingresa">Ingresa</span>&nbsp;<span class="tus-datos">tus datos</span>
+    </h1>
+
+    <app-ventana-controles class="controles" />
+  </header>
+
+  <div class="pasos">
+    <span class="pasos__linea"></span>
+
+    <div class="paso paso--ingresa paso--activo">
+      <span class="paso__numero">1</span>
+      <span class="paso__texto">Ingresa datos</span>
+    </div>
+    <div class="paso paso--preguntas">
+      <span class="paso__numero">2</span>
+      <span class="paso__texto">Preguntas</span>
+    </div>
+    <div class="paso paso--generar">
+      <span class="paso__numero">3</span>
+      <span class="paso__texto">Generar examen</span>
+    </div>
+  </div>
+
+  <div class="contenido">
+    <form class="formulario">
+      <label for="plantel">Nombre del plantel:</label>
+      <input id="plantel" type="text" placeholder="Ingresa la escuela" [(ngModel)]="datos.plantel" name="plantel" />
+
+      <label for="docente">Nombre del docente:</label>
+      <input id="docente" type="text" placeholder="Nombre(s) y apellidos" [(ngModel)]="datos.docente" name="docente" />
+
+      <div class="fila">
+        <div class="campo">
+          <label for="fecha">Fecha:</label>
+          <input id="fecha" type="date" [(ngModel)]="datos.fecha" name="fecha" />
+        </div>
+        <div class="campo">
+          <label for="grupo">Grupo:</label>
+          <input id="grupo" type="text" placeholder="Grado y grupo" [(ngModel)]="datos.grupo" name="grupo" />
+        </div>
+      </div>
+
+      <label for="tipo-evaluacion">Tipo de evaluación:</label>
+      <div class="select-tipo">
+        <button
+          id="tipo-evaluacion"
+          type="button"
+          class="select-tipo__trigger"
+          (click)="toggleDropdown()"
+        >
+          <span>{{ tipoSeleccionado || 'Elige una opción' }}</span>
+          <span class="select-tipo__flecha"></span>
+        </button>
+
+        <ul class="select-tipo__lista" *ngIf="dropdownAbierto">
+          <li *ngFor="let tipo of tiposEvaluacion" (click)="seleccionarTipo(tipo)">{{ tipo }}</li>
+        </ul>
+      </div>
+
+      <button class="boton-generar" type="button" (click)="continuar()">Continuar</button>
+    </form>
+
+    <img class="ilustracion" src="img/img_datos.png" alt="" />
+  </div>
+
+  <div class="modal-relacion" *ngIf="mostrarModalRelacion">
+    <button class="modal-relacion__cerrar" type="button" (click)="mostrarModalRelacion = false">✕</button>
+
+    <div class="tarjetas">
+      <div class="tarjeta" *ngFor="let tipo of tiposRelacion">
+        <img class="tarjeta__icono" src="img/img_relacion.png" alt="" />
+        <p class="tarjeta__titulo">{{ tipo.titulo }}</p>
+        <button class="tarjeta__boton" type="button" (click)="elegirRelacion(tipo)">Realizar Evaluación</button>
+      </div>
+    </div>
+  </div>
+</div>

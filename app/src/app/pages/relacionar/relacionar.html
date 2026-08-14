@@ -1,0 +1,129 @@
+<div class="pantalla fondo-gyced">
+  <header class="cabecera">
+    <img class="logo" src="img/icono.png" alt="" />
+    <h1 class="titulo-pagina">Relacionar</h1>
+
+    <app-ventana-controles class="controles" />
+  </header>
+
+  <div class="pasos">
+    <span class="pasos__linea"></span>
+
+    <div class="paso paso--ingresa">
+      <span class="paso__numero">1</span>
+      <span class="paso__texto">Ingresa datos</span>
+    </div>
+    <div class="paso paso--preguntas paso--activo">
+      <span class="paso__numero">2</span>
+      <span class="paso__texto">Preguntas</span>
+    </div>
+    <div class="paso paso--generar">
+      <span class="paso__numero">3</span>
+      <span class="paso__texto">Generar examen</span>
+    </div>
+  </div>
+
+  <div class="datos-generales">
+    <div class="datos-generales__col">
+      <p class="datos-generales__titulo">Datos generales</p>
+      <p>Nombre del plantel: <span class="dato-valor">{{ datos.plantel }}</span></p>
+      <p>Nombre del docente: <span class="dato-valor">{{ datos.docente }}</span></p>
+    </div>
+    <div class="datos-generales__col datos-generales__col--derecha">
+      <p class="datos-generales__titulo datos-generales__espaciador">&nbsp;</p>
+      <p>Fecha de evaluación: <span class="dato-valor">{{ datos.fecha }}</span></p>
+      <p>Grupo: <span class="dato-valor">{{ datos.grupo }}</span></p>
+    </div>
+  </div>
+
+  <div class="examen-meta">
+    <div class="campo">
+      <label>Título del examen</label>
+      <input class="input-gyced" type="text" placeholder="Examen 1" [(ngModel)]="tituloExamen" name="tituloExamen" />
+    </div>
+    <div class="campo">
+      <label>Instrucciones</label>
+      <input class="input-gyced" type="text" placeholder="Relaciona las columnas..." [(ngModel)]="instrucciones" name="instrucciones" />
+    </div>
+  </div>
+
+  <div class="editor">
+    <div class="editor__preguntas">
+      <h2>Preguntas</h2>
+
+      <div class="par-item" *ngFor="let par of pares; let i = index">
+        <span class="par-item__numero">{{ i + 1 }}</span>
+
+        <input
+          *ngIf="preguntaEsTexto"
+          class="input-gyced"
+          type="text"
+          placeholder="Escribe aquí tu pregunta.."
+          [(ngModel)]="par.pregunta.texto"
+          [name]="'pregunta' + i"
+        />
+
+        <label class="archivo" *ngIf="!preguntaEsTexto" [class.archivo--con-imagen]="par.pregunta.archivoUrl">
+          <input type="file" accept="image/png,image/jpeg" (change)="onArchivo($event, par.pregunta)" hidden />
+          <img *ngIf="par.pregunta.archivoUrl" class="archivo__preview" [src]="par.pregunta.archivoUrl" alt="" />
+          <span class="archivo__pill">
+            <img src="img/cargar_img.png" alt="" />
+            {{ par.pregunta.archivoNombre || 'Seleccionar archivo' }}
+            <button
+              *ngIf="par.pregunta.archivoNombre"
+              class="archivo__quitar"
+              type="button"
+              (click)="quitarImagen(par.pregunta, $event)"
+            >✕</button>
+          </span>
+        </label>
+
+        <button class="quitar" type="button" (click)="quitarPar(i)">✕</button>
+      </div>
+
+      <button class="btn-agregar" type="button" (click)="agregarPar()">+ Agregar pregunta</button>
+    </div>
+
+    <div class="editor__divisor"></div>
+
+    <div class="editor__respuestas">
+      <h2>Respuestas</h2>
+
+      <div class="par-item" *ngFor="let par of pares; let i = index">
+        <span class="par-item__numero">{{ i + 1 }}</span>
+
+        <input
+          *ngIf="respuestaEsTexto"
+          class="input-gyced"
+          type="text"
+          placeholder="Escribe aquí"
+          [(ngModel)]="par.respuesta.texto"
+          [name]="'respuesta' + i"
+        />
+
+        <label class="archivo" *ngIf="!respuestaEsTexto" [class.archivo--con-imagen]="par.respuesta.archivoUrl">
+          <input type="file" accept="image/png,image/jpeg" (change)="onArchivo($event, par.respuesta)" hidden />
+          <img *ngIf="par.respuesta.archivoUrl" class="archivo__preview" [src]="par.respuesta.archivoUrl" alt="" />
+          <span class="archivo__pill">
+            <img src="img/cargar_img.png" alt="" />
+            {{ par.respuesta.archivoNombre || 'Seleccionar archivo' }}
+            <button
+              *ngIf="par.respuesta.archivoNombre"
+              class="archivo__quitar"
+              type="button"
+              (click)="quitarImagen(par.respuesta, $event)"
+            >✕</button>
+          </span>
+        </label>
+
+        <button class="quitar" type="button" (click)="quitarPar(i)">✕</button>
+      </div>
+
+      <button class="link-agregar" type="button" (click)="agregarPar()">+ Agregar respuesta</button>
+
+      <p class="ayuda">**Las respuestas saldrán aleatoriamente en el examen final.</p>
+
+      <button class="boton-generar" type="button">Generar</button>
+    </div>
+  </div>
+</div>

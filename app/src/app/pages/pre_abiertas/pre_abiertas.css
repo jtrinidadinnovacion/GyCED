@@ -1,0 +1,265 @@
+.pantalla {
+  position: relative;
+  width: 100vw;
+  height: 100vh;
+  padding: 2rem 2.5rem;
+  overflow: hidden;
+  overflow-y: auto;
+}
+
+.cabecera {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.logo {
+  width: 70px;
+  height: 70px;
+  object-fit: contain;
+  flex-shrink: 0;
+}
+
+.titulo-pagina {
+  margin: 0;
+  font-family: 'Goldplay', sans-serif;
+  font-weight: 600;
+  font-size: 3rem;
+}
+
+.titulo-pagina .preguntas {
+  color: #4361ee;
+}
+
+.titulo-pagina .abiertas {
+  color: #002e5b;
+}
+
+.controles {
+  margin-left: auto;
+}
+
+.pasos {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4.5rem;
+  margin-bottom: 2rem;
+}
+
+.pasos__linea {
+  position: absolute;
+  left: -0.2rem;
+  right: -0.2rem;
+  top: 50%;
+  height: 2px;
+  background: rgba(122, 84, 255, 0.35);
+  transform: translateY(-50%);
+  z-index: 0;
+}
+
+.paso {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  gap: 1.2rem;
+  padding: 0.65rem 1.6rem;
+  border-radius: 999px;
+  font-family: 'Goldplay', sans-serif;
+  font-weight: 600;
+  font-size: 1.5rem;
+  transform: translateX(14rem);
+}
+
+.paso__numero {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  font-size: 1.05rem;
+}
+
+.paso--ingresa {
+  background: #e6e8f3;
+  color: #7a54ff;
+  border: 2px solid #7a54ff;
+}
+
+.paso--ingresa .paso__numero {
+  background: #7a54ff;
+  color: #fff;
+}
+
+.paso--ingresa.paso--activo {
+  background: #7a54ff;
+  color: #fff;
+}
+
+.paso--ingresa.paso--activo .paso__numero {
+  background: #fff;
+  color: #7a54ff;
+}
+
+.paso--preguntas {
+  background: #e6e8f3;
+  color: #89d616;
+  border: 2px solid #89d616;
+}
+
+.paso--preguntas .paso__numero {
+  background: #89d616;
+  color: #fff;
+}
+
+.paso--preguntas.paso--activo {
+  background: #89d616;
+  color: #fff;
+  border: none;
+}
+
+.paso--preguntas.paso--activo .paso__numero {
+  background: #fff;
+  color: #89d616;
+}
+
+.paso--generar {
+  background: #e6e8f3;
+  color: #27bdf8;
+  border: 2px solid #27bdf8;
+}
+
+.paso--generar .paso__numero {
+  background: #27bdf8;
+  color: #fff;
+}
+
+.datos-generales {
+  display: flex;
+  gap: 3rem;
+  background: #ecedf3;
+  border-radius: 12px;
+  padding: 1.25rem 1.75rem;
+  margin-bottom: 1.5rem;
+  font-family: 'Goldplay', sans-serif;
+  color: #585e99;
+}
+
+.datos-generales__col {
+  flex: 1;
+}
+
+.datos-generales__col p {
+  margin: 0.2rem 0;
+}
+
+.datos-generales__titulo {
+  font-weight: 600;
+  color: #002e5b;
+  margin-bottom: 0.4rem;
+}
+
+.datos-generales__espaciador {
+  visibility: hidden;
+}
+
+.examen-meta {
+  display: flex;
+  gap: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.examen-meta .campo {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.examen-meta label {
+  font-family: 'Goldplay', sans-serif;
+  font-weight: 500;
+  font-size: 1.1rem;
+  color: #585e99;
+  margin-bottom: 0.4rem;
+}
+
+.examen-meta .input-gyced {
+  width: 100%;
+}
+
+.editor {
+  display: flex;
+}
+
+.editor h2 {
+  font-family: 'Goldplay', sans-serif;
+  font-weight: 600;
+  font-size: 1.2rem;
+  color: #002e5b;
+  margin: 0 0 0.75rem;
+}
+
+.editor__preguntas {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.pregunta-item {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 0.9rem;
+}
+
+.pregunta-item .input-gyced {
+  flex: 1;
+}
+
+.pregunta-item__numero {
+  font-family: 'Goldplay', sans-serif;
+  font-weight: 600;
+  color: #585e99;
+  flex-shrink: 0;
+}
+
+.quitar {
+  border: none;
+  background: none;
+  cursor: pointer;
+  font-size: 1.1rem;
+  color: #002e5b;
+  font-weight: 700;
+}
+
+.btn-agregar {
+  align-self: center;
+  border: none;
+  border-radius: 999px;
+  background: #7a54ff;
+  color: #fff;
+  font-family: 'Goldplay', sans-serif;
+  font-weight: 600;
+  font-size: 1.05rem;
+  padding: 0.75rem 1.5rem;
+  cursor: pointer;
+  margin-top: 0.25rem;
+}
+
+.boton-generar {
+  display: block;
+  margin: 1.5rem 0 0 auto;
+  min-width: 200px;
+  height: 56px;
+  border: none;
+  cursor: pointer;
+  background: url('/img/btn_generar.png') center / 100% 100% no-repeat;
+  font-family: 'Goldplay', sans-serif;
+  font-weight: 600;
+  font-size: 1.3rem;
+  color: #fff;
+}

@@ -1,0 +1,111 @@
+<div class="pantalla fondo-gyced">
+  <header class="cabecera">
+    <img class="logo" src="img/icono.png" alt="" />
+    <h1 class="titulo-pagina">
+      <span class="comprension">Comprensión</span>&nbsp;<span class="lectora">Lectora</span>
+    </h1>
+
+    <app-ventana-controles class="controles" />
+  </header>
+
+  <div class="pasos">
+    <span class="pasos__linea"></span>
+
+    <div class="paso paso--ingresa">
+      <span class="paso__numero">1</span>
+      <span class="paso__texto">Ingresa datos</span>
+    </div>
+    <div class="paso paso--preguntas paso--activo">
+      <span class="paso__numero">2</span>
+      <span class="paso__texto">Preguntas</span>
+    </div>
+    <div class="paso paso--generar">
+      <span class="paso__numero">3</span>
+      <span class="paso__texto">Generar examen</span>
+    </div>
+  </div>
+
+  <div class="datos-generales">
+    <div class="datos-generales__col">
+      <p class="datos-generales__titulo">Datos generales</p>
+      <p>Nombre del plantel: <span class="dato-valor">{{ datos.plantel }}</span></p>
+      <p>Nombre del docente: <span class="dato-valor">{{ datos.docente }}</span></p>
+    </div>
+    <div class="datos-generales__col datos-generales__col--derecha">
+      <p class="datos-generales__titulo datos-generales__espaciador">&nbsp;</p>
+      <p>Fecha de evaluación: <span class="dato-valor">{{ datos.fecha }}</span></p>
+      <p>Grupo: <span class="dato-valor">{{ datos.grupo }}</span></p>
+    </div>
+  </div>
+
+  <div class="examen-meta">
+    <div class="campo">
+      <label>Título del examen</label>
+      <input class="input-gyced" type="text" placeholder="Examen 1" [(ngModel)]="tituloExamen" name="tituloExamen" />
+    </div>
+    <div class="campo">
+      <label>Instrucciones</label>
+      <input class="input-gyced" type="text" placeholder="Responder correctamente..." [(ngModel)]="instrucciones" name="instrucciones" />
+    </div>
+  </div>
+
+  <div class="editor">
+    <div class="editor__preguntas">
+      <button class="boton-lectura" type="button" (click)="abrirModalLectura()">
+        <img src="img/cargar_archivo.png" alt="" />
+        Ingresa aquí tu lectura
+      </button>
+
+      <h2>Preguntas</h2>
+
+      <div
+        class="pregunta-item"
+        [class.pregunta-item--activa]="i === indiceActual"
+        *ngFor="let pregunta of preguntas; let i = index"
+        (click)="seleccionarPregunta(i)"
+      >
+        <span class="pregunta-item__numero">{{ i + 1 }}</span>
+        <input class="input-gyced" type="text" placeholder="Escribe aquí tu pregunta.." [(ngModel)]="pregunta.texto" [name]="'pregunta' + i" />
+        <button class="quitar" type="button" (click)="quitarPregunta(i); $event.stopPropagation()">✕</button>
+      </div>
+
+      <button class="btn-agregar" type="button" (click)="agregarPregunta()">+ Agregar pregunta</button>
+    </div>
+
+    <div class="editor__divisor"></div>
+
+    <div class="editor__respuestas">
+      <h2>Respuestas</h2>
+
+      <div class="respuesta-item" *ngFor="let respuesta of respuestasActuales; let i = index">
+        <span class="pregunta-item__numero">{{ i + 1 }}</span>
+        <input class="input-gyced" type="text" placeholder="Escribe aquí" [(ngModel)]="respuesta.texto" [name]="'respuesta' + i" />
+        <label class="check">
+          <input type="checkbox" [checked]="respuesta.correcta" (click)="marcarCorrecta(i); $event.preventDefault()" [name]="'correcta' + i" />
+          <span class="check__caja" [class.check__caja--activa]="respuesta.correcta"></span>
+        </label>
+        <button class="quitar" type="button" (click)="quitarRespuesta(i)">✕</button>
+      </div>
+
+      <button class="link-agregar" type="button" (click)="agregarRespuesta()">+ Agregar respuesta</button>
+
+      <button class="boton-generar" type="button">Generar</button>
+    </div>
+  </div>
+
+  <div class="modal-lectura" *ngIf="mostrarModalLectura">
+    <div class="modal-lectura__caja">
+      <textarea
+        class="modal-lectura__area"
+        placeholder="Escribe la lectura aquí"
+        [(ngModel)]="lecturaBorrador"
+        name="lecturaBorrador"
+      ></textarea>
+
+      <div class="modal-lectura__acciones">
+        <button class="modal-lectura__cerrar" type="button" (click)="cerrarModalLectura()">Cerrar</button>
+        <button class="modal-lectura__guardar" type="button" (click)="guardarLectura()">Guardar</button>
+      </div>
+    </div>
+  </div>
+</div>
