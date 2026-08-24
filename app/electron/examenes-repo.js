@@ -1,6 +1,19 @@
-const { randomUUID } = require('crypto');
+const { randomBytes } = require('crypto');
 const db = require('./db');
 const { TIPOS_PREGUNTA } = require('./tipos-pregunta');
+
+// Alfabeto sin caracteres ambiguos (sin 0/O, 1/I/L) para que el código sea
+// corto y fácil de leer/escribir a mano, en vez de un UUID de 36 caracteres.
+const ALFABETO_CODIGO = 'ABCDEFGHJKMNPQRSTUVWXYZ23456789';
+
+function generarCodigo(longitud = 8) {
+  const bytes = randomBytes(longitud);
+  let codigo = '';
+  for (let i = 0; i < longitud; i++) {
+    codigo += ALFABETO_CODIGO[bytes[i] % ALFABETO_CODIGO.length];
+  }
+  return codigo;
+}
 
 function validar(examen) {
   if (!examen.titulo) throw new Error('El examen requiere un título.');
@@ -11,15 +24,20 @@ function validar(examen) {
   }
 }
 
+/** Fecha actual en formato YYYY-MM-DD, sin hora. */
+function fechaHoy() {
+  return new Date().toISOString().slice(0, 10);
+}
+
 function crear(examen) {
   validar(examen);
-  const id = randomUUID();
-  const now = new Date().toISOString();
+  const id = generarCodigo();
+  const hoy = fechaHoy();
 
   const insertar = db.transaction(() => {
     db.prepare(
-      `INSERT INTO examenes (id, titulo, instrucciones, nombre_plantel, nombre_docente, fecha_evaluacion, grupo, created_at, updated_at, sync_status)
-       VALUES (@id, @titulo, @instrucciones, @nombre_plantel, @nombre_docente, @fecha_evaluacion, @grupo, @created_at, @updated_at, 'pendiente')`
+      `INSERT INTO examenes (id, titulo, instrucciones, nombre_plantel, nombre_docente, fecha_evaluacion, grupo, nuevo, actualizacion, estado)
+       VALUES (@id, @titulo, @instrucciones, @nombre_plantel, @nombre_docente, @fecha_evaluacion, @grupo, @nuevo, @actualizacion, 'pendiente')`
     ).run({
       id,
       titulo: examen.titulo,
@@ -28,8 +46,8 @@ function crear(examen) {
       nombre_docente: examen.nombreDocente || null,
       fecha_evaluacion: examen.fechaEvaluacion || null,
       grupo: examen.grupo || null,
-      created_at: now,
-      updated_at: now,
+      nuevo: hoy,
+      actualizacion: hoy,
     });
 
     insertarPreguntas(id, examen.preguntas || []);
@@ -39,33 +57,87 @@ function crear(examen) {
   return { id };
 }
 
-function insertarPreguntas(examenId, preguntas) {
-  const insertPregunta = db.prepare(
-    `INSERT INTO preguntas (id, examen_id, tipo, orden, texto, imagen_data) VALUES (?, ?, ?, ?, ?, ?)`
-  );
-  const insertRespuesta = db.prepare(
-    `INSERT INTO respuestas (id, pregunta_id, texto, imagen_data, es_correcta, orden) VALUES (?, ?, ?, ?, ?, ?)`
-  );
+function actualizar(id, examen) {
+  validar(examen);
+  const hoy = fechaHoy();
 
-  preguntas.forEach((pregunta, index) => {
-    const preguntaId = randomUUID();
-    insertPregunta.run(preguntaId, examenId, pregunta.tipo, index, pregunta.texto || null, pregunta.imagenData || null);
+  const ejecutarActualizacion = db.transaction(() => {
+    const resultado = db
+      .prepare(
+        `UPDATE examenes
+         SET titulo = @titulo, instrucciones = @instrucciones, nombre_plantel = @nombre_plantel,
+             nombre_docente = @nombre_docente, fecha_evaluacion = @fecha_evaluacion, grupo = @grupo,
+             actualizacion = @actualizacion, estado = 'pendiente'
+         WHERE id = @id`
+      )
+      .run({
+        id,
+        titulo: examen.titulo,
+        instrucciones: examen.instrucciones || null,
+        nombre_plantel: examen.nombrePlantel || null,
+        nombre_docente: examen.nombreDocente || null,
+        fecha_evaluacion: examen.fechaEvaluacion || null,
+        grupo: examen.grupo || null,
+        actualizacion: hoy,
+      });
 
-    (pregunta.respuestas || []).forEach((respuesta, rIndex) => {
-      insertRespuesta.run(
-        randomUUID(),
-        preguntaId,
-        respuesta.texto || null,
-        respuesta.imagenData || null,
-        respuesta.esCorrecta ? 1 : 0,
-        rIndex
-      );
-    });
+    if (resultado.changes === 0) {
+      throw new Error(`No existe un examen con id ${id}.`);
+    }
+
+    db.prepare(`DELETE FROM preguntas WHERE examen_id = ?`).run(id);
+    insertarPreguntas(id, examen.preguntas || []);
   });
+
+  ejecutarActualizacion();
+  return { id };
+}
+
+/** Guarda todas las preguntas de un examen en una sola fila de 'preguntas' y una
+ *  sola fila de 'respuestas'. Todo el examen comparte un solo tipo de pregunta
+ *  (se elige una vez para todo el examen), por eso 'tipo' guarda un único valor:
+ *  - preguntas.tipo: [tipo_de_examen]
+ *  - preguntas.texto: [numero, texto_pregunta, numero, texto_pregunta, ...]
+ *  - respuestas.texto: [[numero, opcion1, opcion2, ...], [numero, opcion1, ...], ...]
+ *  - respuestas.es_correcta: [[numero, texto_correcta], [numero, texto_correcta], ...] */
+function insertarPreguntas(examenId, preguntas) {
+  if (preguntas.length === 0) return;
+
+  const preguntaId = generarCodigo();
+  const textoPreguntas = [];
+  const textoRespuestas = [];
+  const imagenRespuestas = [];
+  const correctas = [];
+
+  preguntas.forEach((pregunta, indice) => {
+    const numero = indice + 1;
+    const respuestas = pregunta.respuestas || [];
+    const correcta = respuestas.find((r) => r.esCorrecta);
+
+    textoPreguntas.push(numero, pregunta.texto || null);
+    textoRespuestas.push([numero, ...respuestas.map((r) => r.texto || null)]);
+    imagenRespuestas.push([numero, ...respuestas.map((r) => r.imagenData || null)]);
+    correctas.push([numero, correcta ? correcta.texto : null]);
+  });
+
+  db.prepare(
+    `INSERT INTO preguntas (id, examen_id, tipo, n_preguntas, texto, imagen_data) VALUES (?, ?, ?, ?, ?, ?)`
+  ).run(
+    preguntaId,
+    examenId,
+    JSON.stringify([preguntas[0].tipo]),
+    preguntas.length,
+    JSON.stringify(textoPreguntas),
+    JSON.stringify(preguntas.map((p) => p.imagenData || null))
+  );
+
+  db.prepare(
+    `INSERT INTO respuestas (id, pregunta_id, texto, imagen_data, es_correcta) VALUES (?, ?, ?, ?, ?)`
+  ).run(generarCodigo(), preguntaId, JSON.stringify(textoRespuestas), JSON.stringify(imagenRespuestas), JSON.stringify(correctas));
 }
 
 function listar() {
-  const examenes = db.prepare(`SELECT * FROM examenes ORDER BY created_at DESC`).all();
+  const examenes = db.prepare(`SELECT * FROM examenes ORDER BY nuevo DESC`).all();
   return examenes.map(mapExamen);
 }
 
@@ -74,8 +146,46 @@ function obtener(id) {
   return examen ? mapExamen(examen) : null;
 }
 
+function parseJson(valor, porDefecto) {
+  if (!valor) return porDefecto;
+  try {
+    return JSON.parse(valor);
+  } catch {
+    return porDefecto;
+  }
+}
+
 function mapExamen(examen) {
-  const preguntas = db.prepare(`SELECT * FROM preguntas WHERE examen_id = ? ORDER BY orden`).all(examen.id);
+  const fila = db.prepare(`SELECT * FROM preguntas WHERE examen_id = ? LIMIT 1`).get(examen.id);
+  let preguntas = [];
+
+  if (fila) {
+    const tipoExamen = parseJson(fila.tipo, [])[0];
+    const imagenes = parseJson(fila.imagen_data, []);
+    const textoPreguntas = parseJson(fila.texto, []); // [numero, texto, numero, texto, ...]
+    const filaRespuestas = db.prepare(`SELECT * FROM respuestas WHERE pregunta_id = ?`).get(fila.id);
+    const textoRespuestas = filaRespuestas ? parseJson(filaRespuestas.texto, []) : []; // [[numero, opcion1, ...], ...]
+    const imagenRespuestas = filaRespuestas ? parseJson(filaRespuestas.imagen_data, []) : [];
+    const correctas = filaRespuestas ? parseJson(filaRespuestas.es_correcta, []) : []; // [[numero, correcta], ...]
+
+    preguntas = Array.from({ length: fila.n_preguntas }, (_, indice) => {
+      const texto = textoPreguntas[indice * 2 + 1];
+      const [, ...opciones] = textoRespuestas[indice] || [];
+      const [, ...opcionesImagenes] = imagenRespuestas[indice] || [];
+      const [, textoCorrecta] = correctas[indice] || [];
+
+      return {
+        tipo: tipoExamen,
+        texto,
+        imagenData: imagenes[indice] ?? null,
+        respuestas: opciones.map((rTexto, rIndice) => ({
+          texto: rTexto,
+          imagenData: opcionesImagenes[rIndice] ?? null,
+          esCorrecta: rTexto === textoCorrecta,
+        })),
+      };
+    });
+  }
 
   return {
     id: examen.id,
@@ -85,26 +195,10 @@ function mapExamen(examen) {
     nombreDocente: examen.nombre_docente,
     fechaEvaluacion: examen.fecha_evaluacion,
     grupo: examen.grupo,
-    createdAt: examen.created_at,
-    updatedAt: examen.updated_at,
-    syncStatus: examen.sync_status,
-    preguntas: preguntas.map((p) => ({
-      id: p.id,
-      tipo: p.tipo,
-      orden: p.orden,
-      texto: p.texto,
-      imagenData: p.imagen_data,
-      respuestas: db
-        .prepare(`SELECT * FROM respuestas WHERE pregunta_id = ? ORDER BY orden`)
-        .all(p.id)
-        .map((r) => ({
-          id: r.id,
-          texto: r.texto,
-          imagenData: r.imagen_data,
-          esCorrecta: !!r.es_correcta,
-          orden: r.orden,
-        })),
-    })),
+    nuevo: examen.nuevo,
+    actualizacion: examen.actualizacion,
+    estado: examen.estado,
+    preguntas,
   };
 }
 
@@ -113,15 +207,15 @@ function eliminar(id) {
 }
 
 function marcarSincronizado(id) {
-  db.prepare(`UPDATE examenes SET sync_status = 'sincronizado' WHERE id = ?`).run(id);
+  db.prepare(`UPDATE examenes SET estado = 'sincronizado' WHERE id = ?`).run(id);
 }
 
 function marcarError(id) {
-  db.prepare(`UPDATE examenes SET sync_status = 'error' WHERE id = ?`).run(id);
+  db.prepare(`UPDATE examenes SET estado = 'error' WHERE id = ?`).run(id);
 }
 
 function pendientes() {
-  return db.prepare(`SELECT id FROM examenes WHERE sync_status = 'pendiente'`).all();
+  return db.prepare(`SELECT id FROM examenes WHERE estado = 'pendiente'`).all();
 }
 
-module.exports = { crear, listar, obtener, eliminar, marcarSincronizado, marcarError, pendientes, mapExamen };
+module.exports = { crear, actualizar, listar, obtener, eliminar, marcarSincronizado, marcarError, pendientes, mapExamen };

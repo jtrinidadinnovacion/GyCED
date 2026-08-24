@@ -1,7 +1,7 @@
 .pantalla {
   position: relative;
-  width: 100vw;
-  height: 100vh;
+  width: 1280px;
+  height: 100%;
   padding: 2rem 2.5rem;
   overflow: hidden;
 }
@@ -92,7 +92,7 @@
   font-family: 'Goldplay', sans-serif;
   font-weight: 600;
   font-size: 2.5rem;
-  color: #a5ebe5;
+  color: #92C4DF;
   line-height: 1.25;
 }
 

@@ -1,16 +1,19 @@
 <div class="inicio">
-  <img class="icono icono--molecula" src="img/ini_uno.png" alt="" />
-  <img class="icono icono--lupa" src="img/ini_dos.png" alt="" />
-  <img class="icono icono--calculadora" src="img/ini_tres.png" alt="" />
-  <img class="icono icono--pincel" src="img/ini_cuatro.png" alt="" />
+  <app-ventana-controles class="controles" [mostrarRegresar]="false" />
+
+  <div class="resplandor resplandor--azul"></div>
+  <div class="resplandor resplandor--morado"></div>
+
+  <img class="circulo circulo--verde" src="img/cir_verde.png" alt="" />
+  <img class="ilustracion" src="img/icono.png" alt="" />
 
   <div class="titulo">
-  <h1>GyCED</h1>
-  <p>
-    <span class="linea-1">Generador y Creador de Evaluaciónes</span><br>
-    Diagnosticas
-  </p>
-</div>
+    <h1>GyCED</h1>
+    <p>
+      <span class="linea-1">Generador y Creador de</span><br>
+      Evaluaciónes Diagnosticas
+    </p>
 
-  <button class="boton-crear" type="button" (click)="crear()">Crear</button>
+    <button class="boton-crear" type="button" (click)="crear()">Inicio</button>
+  </div>
 </div>

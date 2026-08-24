@@ -1,9 +1,11 @@
 import { ChangeDetectorRef, Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { Router } from '@angular/router';
 import Swal from 'sweetalert2';
 import { VentanaControles } from '../../shared/ventana-controles/ventana-controles';
 import { DatosExamenService } from '../../core/datos-examen.service';
+import { ExamenesService } from '../../core/examenes.service';
 
 interface Respuesta {
   texto: string;
@@ -27,7 +29,7 @@ function crearRespuestasIniciales(): Respuesta[] {
   selector: 'app-pro-lectora',
   imports: [CommonModule, FormsModule, VentanaControles],
   templateUrl: './pro_lectora.html',
-  styleUrl: './pro_lectora.css',
+  styleUrls: ['./pro_lectora.css', '../../shared/responsive.css'],
 })
 export class ProLectora {
   tituloExamen = '';
@@ -43,6 +45,8 @@ export class ProLectora {
   constructor(
     public datos: DatosExamenService,
     private cdr: ChangeDetectorRef,
+    private examenesService: ExamenesService,
+    public router: Router,
   ) {}
 
   get respuestasActuales(): Respuesta[] {
@@ -141,5 +145,64 @@ export class ProLectora {
     this.respuestasActuales.forEach((respuesta, i) => {
       respuesta.correcta = i === index;
     });
+  }
+
+  async generarExamen() {
+    const titulo = this.tituloExamen || 'Examen';
+
+    this.datos.tituloExamen = titulo;
+    this.datos.instrucciones = this.instrucciones;
+    this.datos.lecturaExamen = this.lectura;
+    this.datos.paresExamen = [];
+    this.datos.preguntasExamen = this.preguntas.map((pregunta, i) => ({
+      numero: i + 1,
+      texto: pregunta.texto,
+      tipo: 'opciones',
+      opciones: pregunta.respuestas.map((respuesta) => ({
+        texto: respuesta.texto,
+        correcta: respuesta.correcta,
+      })),
+      respuestasEspacios: [],
+    }));
+
+    const instruccionesGuardadas = [this.lectura ? `Lectura:\n${this.lectura}` : '', this.instrucciones]
+      .filter(Boolean)
+      .join('\n\n');
+
+    const guardado = await this.examenesService.guardarSiHayExamen(this.datos.examenId, {
+      titulo,
+      instrucciones: instruccionesGuardadas || null,
+      nombrePlantel: this.datos.plantel,
+      nombreDocente: this.datos.docente,
+      fechaEvaluacion: this.datos.fecha,
+      grupo: this.datos.grupo,
+      preguntas: this.preguntas.map((pregunta) => ({
+        tipo: 'opcion_multiple',
+        texto: pregunta.texto,
+        respuestas: pregunta.respuestas.map((respuesta) => ({
+          texto: respuesta.texto,
+          esCorrecta: respuesta.correcta,
+        })),
+      })),
+    });
+
+    if (!guardado) {
+      await Swal.fire({
+        title: 'No se pudo guardar',
+        html: 'Ocurrió un error al guardar los datos en la base de datos.',
+        imageUrl: 'img/img_alerta.png',
+        imageWidth: 90,
+        confirmButtonText: 'Entendido',
+        confirmButtonColor: '#7a54ff',
+        customClass: {
+          popup: 'gyced-swal-popup',
+          container: 'gyced-swal-container',
+        },
+        backdrop: 'rgba(255, 255, 255, 0.45)',
+        animation: false,
+      });
+    }
+
+    this.router.navigate(['/generar-examen']);
   }
 }

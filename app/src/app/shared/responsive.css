@@ -1,0 +1,7 @@
+/* El escalado de toda la pantalla ahora lo maneja app.ts (transform: scale
+   sobre un lienzo fijo de 1280x800), por lo que aquí solo corregimos el
+   desplazamiento fijo de los "pasos" que rompía el centrado. */
+
+.paso {
+  transform: none;
+}

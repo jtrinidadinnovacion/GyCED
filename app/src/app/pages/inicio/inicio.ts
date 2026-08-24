@@ -1,9 +1,10 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
+import { VentanaControles } from '../../shared/ventana-controles/ventana-controles';
 
 @Component({
   selector: 'app-inicio',
-  imports: [],
+  imports: [VentanaControles],
   templateUrl: './inicio.html',
   styleUrl: './inicio.css',
 })

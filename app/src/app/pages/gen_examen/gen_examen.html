@@ -1,0 +1,132 @@
+<div class="pantalla fondo-gyced">
+  <header class="cabecera no-imprimir">
+    <img class="logo" src="img/icono.png" alt="" />
+    <h1 class="titulo-pagina">
+      <span class="generar">Generar</span>&nbsp;<span class="examen">examen</span>
+    </h1>
+
+    <app-ventana-controles class="controles" />
+  </header>
+
+  <div class="pasos no-imprimir">
+    <span class="pasos__linea"></span>
+
+    <div class="paso paso--ingresa">
+      <span class="paso__numero">1</span>
+      <span class="paso__texto">Ingresa datos</span>
+    </div>
+    <div class="paso paso--preguntas">
+      <span class="paso__numero">2</span>
+      <span class="paso__texto">Preguntas</span>
+    </div>
+    <div class="paso paso--generar paso--activo">
+      <span class="paso__numero">3</span>
+      <span class="paso__texto">Generar examen</span>
+    </div>
+  </div>
+
+  <div class="datos-generales no-imprimir">
+    <div class="datos-generales__col">
+      <p class="datos-generales__titulo">Datos generales</p>
+      <p>Nombre del plantel: <span class="dato-valor">{{ datos.plantel }}</span></p>
+      <p>Nombre del docente: <span class="dato-valor">{{ datos.docente }}</span></p>
+    </div>
+    <div class="datos-generales__col datos-generales__col--derecha">
+      <p class="datos-generales__titulo datos-generales__espaciador">&nbsp;</p>
+      <p>Fecha de evaluación: <span class="dato-valor">{{ datos.fecha }}</span></p>
+      <p>Grupo: <span class="dato-valor">{{ datos.grupo }}</span></p>
+    </div>
+  </div>
+
+  <div class="opciones no-imprimir">
+    <button
+      class="opcion"
+      type="button"
+      [class.opcion--activa]="opcion.id === seleccionada"
+      *ngFor="let opcion of opciones"
+      (click)="seleccionar(opcion.id)"
+    >
+      <span class="opcion__radio"></span>
+      <span class="opcion__texto">{{ opcion.texto }}</span>
+    </button>
+  </div>
+
+  <div
+    class="examen-preview"
+    [class.examen-preview--overlay]="mostrarPreview"
+    [class.examen-preview--oculto]="!mostrarPreview"
+    *ngIf="mostrarPreview || imprimiendo"
+  >
+    <button class="examen-preview__cerrar no-imprimir" *ngIf="mostrarPreview" type="button" (click)="cerrarPreview()">✕</button>
+
+    <div class="hoja">
+      <div class="hoja__encabezado">
+        <div class="hoja__marca">
+          <p class="hoja__logo">GyCED</p>
+          <p class="hoja__eslogan">Generador y Creador de<br />Evaluaciónes Diagnosticas</p>
+        </div>
+
+        <div class="hoja__campos">
+          <div class="hoja__campo"><strong>Plantel:</strong> {{ datos.plantel }}</div>
+          <div class="hoja__campo"><strong>Grupo:</strong> {{ datos.grupo }}</div>
+          <div class="hoja__campo"><strong>Docente:</strong> {{ datos.docente }}</div>
+          <div class="hoja__campo"><strong>Fecha:</strong> {{ datos.fecha }}</div>
+        </div>
+      </div>
+
+      <div class="hoja__intro">
+        <p class="hoja__nombre">Nombre:<span class="hoja__nombre-linea"></span></p>
+        <p class="hoja__instrucciones-titulo" *ngIf="datos.instrucciones">Instrucciones:</p>
+        <p class="hoja__instrucciones-texto" *ngIf="datos.instrucciones">{{ datos.instrucciones }}</p>
+      </div>
+
+      <h2 class="hoja__titulo" *ngIf="datos.tituloExamen">{{ datos.tituloExamen }}</h2>
+
+      <p class="hoja__lectura" *ngIf="datos.lecturaExamen">{{ datos.lecturaExamen }}</p>
+
+      <ng-container *ngIf="datos.paresExamen.length; else preguntasNormales">
+        <div class="hoja__par" *ngFor="let par of datos.paresExamen">
+          <span class="hoja__par-numero">{{ par.numero }}.</span>
+          <span class="hoja__par-pregunta">{{ par.pregunta }}</span>
+          <span class="hoja__par-flecha">→</span>
+          <span class="hoja__par-respuesta">{{ par.respuesta }}</span>
+        </div>
+      </ng-container>
+
+      <ng-template #preguntasNormales>
+        <div class="hoja__pregunta" *ngFor="let pregunta of datos.preguntasExamen">
+          <p class="hoja__pregunta-texto">
+            <strong>{{ pregunta.numero }}. </strong>
+            <ng-container *ngIf="pregunta.tipo !== 'espacios'">{{ pregunta.texto }}</ng-container>
+            <ng-container *ngIf="pregunta.tipo === 'espacios'">
+              <ng-container *ngFor="let parte of pregunta.texto.split('_'); let i = index; let last = last">
+                {{ parte }}<span class="hoja__blanco">{{
+                  mostrarRespuestas ? pregunta.respuestasEspacios[i] : (last ? '' : '_____')
+                }}</span>
+              </ng-container>
+            </ng-container>
+          </p>
+
+          <div class="hoja__opciones" *ngIf="pregunta.tipo === 'opciones'">
+            <span
+              class="hoja__opcion"
+              *ngFor="let opcion of pregunta.opciones; let j = index"
+              [class.hoja__opcion--correcta]="mostrarRespuestas && opcion.correcta"
+            >
+              {{ letra(j) }}) {{ opcion.texto }}
+            </span>
+          </div>
+
+          <p class="hoja__respuesta-abierta" *ngIf="pregunta.tipo === 'abierta'">
+            <span class="hoja__linea-larga"></span>
+          </p>
+        </div>
+      </ng-template>
+
+      <div class="hoja__pie">
+        <p class="hoja__pie-logo">GyCED</p>
+        <p class="hoja__pie-texto">Generador y Creador de Evaluaciónes Diagnosticas</p>
+      </div>
+    </div>
+  </div>
+</div>

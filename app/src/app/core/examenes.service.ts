@@ -7,6 +7,23 @@ export class ExamenesService {
     return window.electronAPI.crearExamen(examen);
   }
 
+  actualizarExamen(id: string, examen: Examen) {
+    return window.electronAPI.actualizarExamen(id, examen);
+  }
+
+  /** Actualiza el examen en la base de datos si ya existe un id (creado en "Ingresa datos")
+   *  y la app corre dentro de Electron. Devuelve false si el guardado falló. */
+  async guardarSiHayExamen(examenId: string | null, examen: Examen): Promise<boolean> {
+    if (!examenId || !window.electronAPI?.actualizarExamen) return true;
+
+    try {
+      await this.actualizarExamen(examenId, examen);
+      return true;
+    } catch {
+      return false;
+    }
+  }
+
   listarExamenes() {
     return window.electronAPI.listarExamenes();
   }

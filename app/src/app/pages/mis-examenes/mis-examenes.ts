@@ -6,7 +6,7 @@ import { VentanaControles } from '../../shared/ventana-controles/ventana-control
   selector: 'app-mis-examenes',
   imports: [VentanaControles],
   templateUrl: './mis-examenes.html',
-  styleUrl: './mis-examenes.css',
+  styleUrls: ['./mis-examenes.css', '../../shared/responsive.css'],
 })
 export class MisExamenes {
   constructor(private router: Router) {}

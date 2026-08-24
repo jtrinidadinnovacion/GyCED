@@ -59,9 +59,17 @@
         *ngFor="let pregunta of preguntas; let i = index"
         (click)="seleccionarPregunta(i)"
       >
-        <span class="pregunta-item__numero">{{ i + 1 }}</span>
-        <input class="input-gyced" type="text" placeholder="Escribe aquí tu pregunta.." [(ngModel)]="pregunta.texto" [name]="'pregunta' + i" />
-        <button class="quitar" type="button" (click)="quitarPregunta(i); $event.stopPropagation()">✕</button>
+        <div class="pregunta-item__fila">
+          <span class="pregunta-item__numero">{{ i + 1 }}</span>
+          <input class="input-gyced" type="text" placeholder="Escribe aquí tu pregunta.." [(ngModel)]="pregunta.texto" [name]="'pregunta' + i" />
+        </div>
+        <button class="quitar quitar--pregunta" type="button" (click)="quitarPregunta(i); $event.stopPropagation()">
+          <svg class="quitar__icono" width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="8" cy="8" r="7" stroke="currentColor" stroke-width="1.5" />
+            <line x1="4.5" y1="8" x2="11.5" y2="8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
+          </svg>
+          Eliminar pregunta
+        </button>
       </div>
 
       <button class="btn-agregar" type="button" (click)="agregarPregunta()">+ Agregar pregunta</button>
@@ -72,19 +80,26 @@
     <div class="editor__respuestas">
       <h2>Respuestas</h2>
 
-      <div class="respuesta-item" *ngFor="let respuesta of respuestasActuales; let i = index">
-        <span class="pregunta-item__numero">{{ i + 1 }}</span>
-        <input class="input-gyced" type="text" placeholder="Escribe aquí" [(ngModel)]="respuesta.texto" [name]="'respuesta' + i" />
-        <label class="check">
-          <input type="checkbox" [checked]="respuesta.correcta" (click)="marcarCorrecta(i); $event.preventDefault()" [name]="'correcta' + i" />
-          <span class="check__caja" [class.check__caja--activa]="respuesta.correcta"></span>
-        </label>
-        <button class="quitar" type="button" (click)="quitarRespuesta(i)">✕</button>
+      <div class="respuesta-item" [class.respuesta-item--correcta]="respuesta.correcta" *ngFor="let respuesta of respuestasActuales; let i = index">
+        <div class="respuesta-item__fila">
+          <span class="pregunta-item__numero">{{ i + 1 }}</span>
+          <input class="input-gyced" type="text" placeholder="Escribe aquí" [(ngModel)]="respuesta.texto" [name]="'respuesta' + i" />
+          <button class="respuesta-item__marcar" type="button" (click)="marcarCorrecta(i)" [attr.aria-pressed]="respuesta.correcta">
+            <img *ngIf="respuesta.correcta" src="img/icon_corre.png" alt="Correcta" />
+          </button>
+        </div>
+        <button class="quitar quitar--respuesta" type="button" (click)="quitarRespuesta(i)">
+          <svg class="quitar__icono" width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="8" cy="8" r="7" stroke="currentColor" stroke-width="1.5" />
+            <line x1="4.5" y1="8" x2="11.5" y2="8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
+          </svg>
+          Eliminar respuesta
+        </button>
       </div>
 
       <button class="link-agregar" type="button" (click)="agregarRespuesta()">+ Agregar respuesta</button>
 
-      <button class="boton-generar" type="button">Generar</button>
+      <button class="boton-generar" type="button" (click)="generarExamen()">Generar</button>
     </div>
   </div>
 </div>

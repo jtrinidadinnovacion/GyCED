@@ -52,33 +52,41 @@
       <h2>Preguntas</h2>
 
       <div class="par-item" *ngFor="let par of pares; let i = index">
-        <span class="par-item__numero">{{ i + 1 }}</span>
+        <div class="par-item__fila">
+          <span class="par-item__numero">{{ i + 1 }}</span>
 
-        <input
-          *ngIf="preguntaEsTexto"
-          class="input-gyced"
-          type="text"
-          placeholder="Escribe aquí tu pregunta.."
-          [(ngModel)]="par.pregunta.texto"
-          [name]="'pregunta' + i"
-        />
+          <input
+            *ngIf="preguntaEsTexto"
+            class="input-gyced"
+            type="text"
+            placeholder="Escribe aquí tu pregunta.."
+            [(ngModel)]="par.pregunta.texto"
+            [name]="'pregunta' + i"
+          />
 
-        <label class="archivo" *ngIf="!preguntaEsTexto" [class.archivo--con-imagen]="par.pregunta.archivoUrl">
-          <input type="file" accept="image/png,image/jpeg" (change)="onArchivo($event, par.pregunta)" hidden />
-          <img *ngIf="par.pregunta.archivoUrl" class="archivo__preview" [src]="par.pregunta.archivoUrl" alt="" />
-          <span class="archivo__pill">
-            <img src="img/cargar_img.png" alt="" />
-            {{ par.pregunta.archivoNombre || 'Seleccionar archivo' }}
-            <button
-              *ngIf="par.pregunta.archivoNombre"
-              class="archivo__quitar"
-              type="button"
-              (click)="quitarImagen(par.pregunta, $event)"
-            >✕</button>
-          </span>
-        </label>
+          <label class="archivo" *ngIf="!preguntaEsTexto" [class.archivo--con-imagen]="par.pregunta.archivoUrl">
+            <input type="file" accept="image/png,image/jpeg" (change)="onArchivo($event, par.pregunta)" hidden />
+            <img *ngIf="par.pregunta.archivoUrl" class="archivo__preview" [src]="par.pregunta.archivoUrl" alt="" />
+            <span class="archivo__pill">
+              <img src="img/cargar_img.png" alt="" />
+              {{ par.pregunta.archivoNombre || 'Seleccionar archivo' }}
+              <button
+                *ngIf="par.pregunta.archivoNombre"
+                class="archivo__quitar"
+                type="button"
+                (click)="quitarImagen(par.pregunta, $event)"
+              >✕</button>
+            </span>
+          </label>
+        </div>
 
-        <button class="quitar" type="button" (click)="quitarPar(i)">✕</button>
+        <button class="quitar quitar--pregunta" type="button" (click)="quitarPar(i)">
+          <svg class="quitar__icono" width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="8" cy="8" r="7" stroke="currentColor" stroke-width="1.5" />
+            <line x1="4.5" y1="8" x2="11.5" y2="8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
+          </svg>
+          Eliminar pregunta
+        </button>
       </div>
 
       <button class="btn-agregar" type="button" (click)="agregarPar()">+ Agregar pregunta</button>
@@ -90,40 +98,48 @@
       <h2>Respuestas</h2>
 
       <div class="par-item" *ngFor="let par of pares; let i = index">
-        <span class="par-item__numero">{{ i + 1 }}</span>
+        <div class="par-item__fila">
+          <span class="par-item__numero">{{ i + 1 }}</span>
 
-        <input
-          *ngIf="respuestaEsTexto"
-          class="input-gyced"
-          type="text"
-          placeholder="Escribe aquí"
-          [(ngModel)]="par.respuesta.texto"
-          [name]="'respuesta' + i"
-        />
+          <input
+            *ngIf="respuestaEsTexto"
+            class="input-gyced"
+            type="text"
+            placeholder="Escribe aquí"
+            [(ngModel)]="par.respuesta.texto"
+            [name]="'respuesta' + i"
+          />
 
-        <label class="archivo" *ngIf="!respuestaEsTexto" [class.archivo--con-imagen]="par.respuesta.archivoUrl">
-          <input type="file" accept="image/png,image/jpeg" (change)="onArchivo($event, par.respuesta)" hidden />
-          <img *ngIf="par.respuesta.archivoUrl" class="archivo__preview" [src]="par.respuesta.archivoUrl" alt="" />
-          <span class="archivo__pill">
-            <img src="img/cargar_img.png" alt="" />
-            {{ par.respuesta.archivoNombre || 'Seleccionar archivo' }}
-            <button
-              *ngIf="par.respuesta.archivoNombre"
-              class="archivo__quitar"
-              type="button"
-              (click)="quitarImagen(par.respuesta, $event)"
-            >✕</button>
-          </span>
-        </label>
+          <label class="archivo" *ngIf="!respuestaEsTexto" [class.archivo--con-imagen]="par.respuesta.archivoUrl">
+            <input type="file" accept="image/png,image/jpeg" (change)="onArchivo($event, par.respuesta)" hidden />
+            <img *ngIf="par.respuesta.archivoUrl" class="archivo__preview" [src]="par.respuesta.archivoUrl" alt="" />
+            <span class="archivo__pill">
+              <img src="img/cargar_img.png" alt="" />
+              {{ par.respuesta.archivoNombre || 'Seleccionar archivo' }}
+              <button
+                *ngIf="par.respuesta.archivoNombre"
+                class="archivo__quitar"
+                type="button"
+                (click)="quitarImagen(par.respuesta, $event)"
+              >✕</button>
+            </span>
+          </label>
+        </div>
 
-        <button class="quitar" type="button" (click)="quitarPar(i)">✕</button>
+        <button class="quitar quitar--respuesta" type="button" (click)="quitarPar(i)">
+          <svg class="quitar__icono" width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="8" cy="8" r="7" stroke="currentColor" stroke-width="1.5" />
+            <line x1="4.5" y1="8" x2="11.5" y2="8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
+          </svg>
+          Eliminar respuesta
+        </button>
       </div>
 
       <button class="link-agregar" type="button" (click)="agregarPar()">+ Agregar respuesta</button>
 
       <p class="ayuda">**Las respuestas saldrán aleatoriamente en el examen final.</p>
 
-      <button class="boton-generar" type="button">Generar</button>
+      <button class="boton-generar" type="button" (click)="generarExamen()">Generar</button>
     </div>
   </div>
 </div>

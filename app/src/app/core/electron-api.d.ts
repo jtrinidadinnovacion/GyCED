@@ -5,13 +5,11 @@ export interface Respuesta {
   texto?: string | null;
   imagenData?: string | null;
   esCorrecta: boolean;
-  orden?: number;
 }
 
 export interface Pregunta {
   id?: string;
   tipo: TipoPregunta;
-  orden?: number;
   texto?: string | null;
   imagenData?: string | null;
   respuestas: Respuesta[];
@@ -25,9 +23,9 @@ export interface Examen {
   nombreDocente?: string | null;
   fechaEvaluacion?: string | null;
   grupo?: string | null;
-  createdAt?: string;
-  updatedAt?: string;
-  syncStatus?: 'pendiente' | 'sincronizado' | 'error';
+  nuevo?: string;
+  actualizacion?: string;
+  estado?: 'pendiente' | 'sincronizado' | 'error';
   preguntas: Pregunta[];
 }
 
@@ -36,13 +34,20 @@ export interface SyncStatus {
   pendientes: number;
 }
 
+export interface ResultadoPdf {
+  guardado: boolean;
+  ruta?: string;
+}
+
 export interface ElectronAPI {
   crearExamen: (examen: Examen) => Promise<{ id: string }>;
+  actualizarExamen: (id: string, examen: Examen) => Promise<{ id: string }>;
   listarExamenes: () => Promise<Examen[]>;
   obtenerExamen: (id: string) => Promise<Examen | null>;
   eliminarExamen: (id: string) => Promise<void>;
   getSyncStatus: () => Promise<SyncStatus>;
   onSyncStatusChange: (callback: (status: SyncStatus) => void) => void;
+  generarPdf: (opciones?: { nombreArchivo?: string }) => Promise<ResultadoPdf>;
 }
 
 declare global {

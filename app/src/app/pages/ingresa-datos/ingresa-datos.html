@@ -28,19 +28,47 @@
   <div class="contenido">
     <form class="formulario">
       <label for="plantel">Nombre del plantel:</label>
-      <input id="plantel" type="text" placeholder="Ingresa la escuela" [(ngModel)]="datos.plantel" name="plantel" />
+      <input
+        id="plantel"
+        type="text"
+        placeholder="Ingresa la escuela"
+        [(ngModel)]="datos.plantel"
+        (ngModelChange)="sanitizarPlantel()"
+        (keydown)="bloquearTecla($event, true)"
+        maxlength="100"
+        required
+        name="plantel"
+      />
 
       <label for="docente">Nombre del docente:</label>
-      <input id="docente" type="text" placeholder="Nombre(s) y apellidos" [(ngModel)]="datos.docente" name="docente" />
+      <input
+        id="docente"
+        type="text"
+        placeholder="Nombre(s) y apellidos"
+        [(ngModel)]="datos.docente"
+        (ngModelChange)="sanitizarDocente()"
+        (keydown)="bloquearTecla($event, false)"
+        maxlength="100"
+        required
+        name="docente"
+      />
 
       <div class="fila">
         <div class="campo">
           <label for="fecha">Fecha:</label>
-          <input id="fecha" type="date" [(ngModel)]="datos.fecha" name="fecha" />
+          <input id="fecha" type="date" [(ngModel)]="datos.fecha" required name="fecha" />
         </div>
         <div class="campo">
           <label for="grupo">Grupo:</label>
-          <input id="grupo" type="text" placeholder="Grado y grupo" [(ngModel)]="datos.grupo" name="grupo" />
+          <input
+            id="grupo"
+            type="text"
+            placeholder="Grado y grupo"
+            [(ngModel)]="datos.grupo"
+            maxlength="30"
+            required
+            name="grupo"
+          />
         </div>
       </div>
 

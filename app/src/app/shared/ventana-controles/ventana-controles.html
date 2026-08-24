@@ -1,6 +1,7 @@
 <div class="controles">
   <div class="controles__pildora">
     <img src="img/about_btn.png" alt="Ayuda" />
+    <img *ngIf="mostrarRegresar" class="controles__regresar" src="img/regre_btn.png" alt="Regresar" (click)="regresar()" />
     <img src="img/mini_pant.png" alt="Minimizar" />
     <img src="img/btn_mini.png" alt="Restaurar" />
     <img class="controles__cerrar" src="img/cerrar_btn.png" alt="Cerrar" />

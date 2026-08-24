@@ -1,9 +1,11 @@
 import { ChangeDetectorRef, Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { Router } from '@angular/router';
 import Swal from 'sweetalert2';
 import { VentanaControles } from '../../shared/ventana-controles/ventana-controles';
 import { DatosExamenService } from '../../core/datos-examen.service';
+import { ExamenesService } from '../../core/examenes.service';
 
 interface Pregunta {
   texto: string;
@@ -14,7 +16,7 @@ interface Pregunta {
   selector: 'app-rel-espacios',
   imports: [CommonModule, FormsModule, VentanaControles],
   templateUrl: './rel_espacios.html',
-  styleUrl: './rel_espacios.css',
+  styleUrls: ['./rel_espacios.css', '../../shared/responsive.css'],
 })
 export class RelEspacios {
   tituloExamen = '';
@@ -26,6 +28,8 @@ export class RelEspacios {
   constructor(
     public datos: DatosExamenService,
     private cdr: ChangeDetectorRef,
+    private examenesService: ExamenesService,
+    public router: Router,
   ) {}
 
   get preguntaActual(): Pregunta {
@@ -86,5 +90,54 @@ export class RelEspacios {
 
     while (respuestas.length < espacios) respuestas.push('');
     while (respuestas.length > espacios) respuestas.pop();
+  }
+
+  async generarExamen() {
+    const titulo = this.tituloExamen || 'Examen';
+
+    this.datos.tituloExamen = titulo;
+    this.datos.instrucciones = this.instrucciones;
+    this.datos.lecturaExamen = '';
+    this.datos.paresExamen = [];
+    this.datos.preguntasExamen = this.preguntas.map((pregunta, i) => ({
+      numero: i + 1,
+      texto: pregunta.texto,
+      tipo: 'espacios',
+      opciones: [],
+      respuestasEspacios: pregunta.respuestas,
+    }));
+
+    const guardado = await this.examenesService.guardarSiHayExamen(this.datos.examenId, {
+      titulo,
+      instrucciones: this.instrucciones || null,
+      nombrePlantel: this.datos.plantel,
+      nombreDocente: this.datos.docente,
+      fechaEvaluacion: this.datos.fecha,
+      grupo: this.datos.grupo,
+      preguntas: this.preguntas.map((pregunta) => ({
+        tipo: 'completar',
+        texto: pregunta.texto,
+        respuestas: pregunta.respuestas.map((texto) => ({ texto, esCorrecta: true })),
+      })),
+    });
+
+    if (!guardado) {
+      await Swal.fire({
+        title: 'No se pudo guardar',
+        html: 'Ocurrió un error al guardar los datos en la base de datos.',
+        imageUrl: 'img/img_alerta.png',
+        imageWidth: 90,
+        confirmButtonText: 'Entendido',
+        confirmButtonColor: '#7a54ff',
+        customClass: {
+          popup: 'gyced-swal-popup',
+          container: 'gyced-swal-container',
+        },
+        backdrop: 'rgba(255, 255, 255, 0.45)',
+        animation: false,
+      });
+    }
+
+    this.router.navigate(['/generar-examen']);
   }
 }

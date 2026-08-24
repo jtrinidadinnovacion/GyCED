@@ -1,3 +1,4 @@
+const dns = require('dns').promises;
 const repo = require('./examenes-repo');
 
 const API_URL = process.env.API_URL || 'http://localhost:3000';
@@ -7,10 +8,12 @@ let isOnline = false;
 let syncing = false;
 let onStatusChange = null;
 
+/** Hay internet si se puede resolver un host público, sin depender de que el
+ *  servidor de sincronización (API_URL) esté levantado. */
 async function checkConnection() {
   try {
-    const res = await fetch(`${API_URL}/health`, { signal: AbortSignal.timeout(4000) });
-    isOnline = res.ok;
+    await dns.lookup('google.com');
+    isOnline = true;
   } catch {
     isOnline = false;
   }
@@ -18,7 +21,9 @@ async function checkConnection() {
 }
 
 async function syncPending() {
-  if (syncing || !isOnline) return;
+  if (syncing) return;
+  await checkConnection();
+  if (!isOnline) return;
   syncing = true;
 
   try {

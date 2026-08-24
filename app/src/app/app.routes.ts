@@ -8,6 +8,7 @@ import { VerFal } from './pages/ver_fal/ver_fal';
 import { RelEspacios } from './pages/rel_espacios/rel_espacios';
 import { Relacionar } from './pages/relacionar/relacionar';
 import { ProLectora } from './pages/pro_lectora/pro_lectora';
+import { GenExamen } from './pages/gen_examen/gen_examen';
 
 export const routes: Routes = [
   { path: '', component: Inicio },
@@ -19,4 +20,5 @@ export const routes: Routes = [
   { path: 'rellenar-espacios', component: RelEspacios },
   { path: 'relacionar', component: Relacionar },
   { path: 'comprension-lectora', component: ProLectora },
+  { path: 'generar-examen', component: GenExamen },
 ];

@@ -31,10 +31,10 @@ html, body {
 }
 
 .fondo-gyced {
-  background:
-    radial-gradient(circle at 0% 140%, rgba(71, 186, 222, 0.55) 0%, rgba(71, 186, 222, 0) 45%),
-    radial-gradient(circle at 120% -50%, rgba(156, 98, 244, 0.5) 0%, rgba(156, 98, 244, 0) 45%),
-    #e6e8f3;
+  /* El fondo real (mismo degradado) lo pinta app.ts en una capa fija detrás
+     del contenido escalado, para que nunca haya una costura de color en los
+     bordes sin importar el tamaño de la ventana. */
+  background: transparent;
 }
 
 .input-gyced {
