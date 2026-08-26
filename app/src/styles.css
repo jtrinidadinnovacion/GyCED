@@ -61,7 +61,7 @@ html, body {
 }
 
 div.swal2-container.gyced-swal-container {
-  background: rgba(20, 20, 40, 0.55) !important;
+  background: rgba(42, 67, 107, 0.6) !important;
   backdrop-filter: blur(6px);
 }
 

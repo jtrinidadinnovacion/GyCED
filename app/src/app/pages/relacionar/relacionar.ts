@@ -43,7 +43,10 @@ export class Relacionar {
     private cdr: ChangeDetectorRef,
     private examenesService: ExamenesService,
     public router: Router,
-  ) {}
+  ) {
+    this.tituloExamen = this.datos.tituloExamen || '';
+    this.instrucciones = this.datos.instrucciones || '';
+  }
 
   get modo(): string {
     return this.datos.modoRelacion || 'texto-texto';

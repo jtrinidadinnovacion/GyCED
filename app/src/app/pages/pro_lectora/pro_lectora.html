@@ -1,9 +1,10 @@
 <div class="pantalla fondo-gyced">
   <header class="cabecera">
     <img class="logo" src="img/icono.png" alt="" />
-    <h1 class="titulo-pagina">
-      <span class="comprension">Comprensión</span>&nbsp;<span class="lectora">Lectora</span>
-    </h1>
+    <div class="titulos">
+      <h1>GyCED</h1>
+      <p>Preguntas</p>
+    </div>
 
     <app-ventana-controles class="controles" />
   </header>
@@ -25,88 +26,101 @@
     </div>
   </div>
 
-  <div class="datos-generales">
-    <div class="datos-generales__col">
-      <p class="datos-generales__titulo">Datos generales</p>
-      <p>Nombre del plantel: <span class="dato-valor">{{ datos.plantel }}</span></p>
-      <p>Nombre del docente: <span class="dato-valor">{{ datos.docente }}</span></p>
-    </div>
-    <div class="datos-generales__col datos-generales__col--derecha">
-      <p class="datos-generales__titulo datos-generales__espaciador">&nbsp;</p>
-      <p>Fecha de evaluación: <span class="dato-valor">{{ datos.fecha }}</span></p>
-      <p>Grupo: <span class="dato-valor">{{ datos.grupo }}</span></p>
-    </div>
-  </div>
+  <div class="tarjeta">
+    <div class="tarjeta__formulario">
+      <div class="fila-titulo">
+        <div class="campo campo--titulo">
+          <label>Título del examen</label>
+          <input class="input-gyced" type="text" placeholder="Escribe aquí..." [(ngModel)]="tituloExamen" name="tituloExamen" />
+        </div>
 
-  <div class="examen-meta">
-    <div class="campo">
-      <label>Título del examen</label>
-      <input class="input-gyced" type="text" placeholder="Examen 1" [(ngModel)]="tituloExamen" name="tituloExamen" />
-    </div>
-    <div class="campo">
-      <label>Instrucciones</label>
-      <input class="input-gyced" type="text" placeholder="Responder correctamente..." [(ngModel)]="instrucciones" name="instrucciones" />
-    </div>
-  </div>
+        <div class="tipo-badge">
+          <span>Comprensión Lectora</span>
+          <span class="tipo-badge__flecha"></span>
+        </div>
+      </div>
 
-  <div class="editor">
-    <div class="editor__preguntas">
+      <div class="campo">
+        <label>Instrucciones</label>
+        <input class="input-gyced" type="text" placeholder="Escribe aquí..." [(ngModel)]="instrucciones" name="instrucciones" />
+      </div>
+
       <button class="boton-lectura" type="button" (click)="abrirModalLectura()">
         <img src="img/cargar_archivo.png" alt="" />
-        Ingresa aquí tu lectura
+        {{ lectura ? 'Editar lectura' : 'Ingresa aquí tu lectura' }}
       </button>
 
-      <h2>Preguntas</h2>
+      <hr class="separador" />
 
-      <div
-        class="pregunta-item"
-        [class.pregunta-item--activa]="i === indiceActual"
-        *ngFor="let pregunta of preguntas; let i = index"
-        (click)="seleccionarPregunta(i)"
-      >
-        <div class="pregunta-item__fila">
-          <span class="pregunta-item__numero">{{ i + 1 }}</span>
-          <input class="input-gyced" type="text" placeholder="Escribe aquí tu pregunta.." [(ngModel)]="pregunta.texto" [name]="'pregunta' + i" />
-        </div>
-        <button class="quitar quitar--pregunta" type="button" (click)="quitarPregunta(i); $event.stopPropagation()">
-          <svg class="quitar__icono" width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <circle cx="8" cy="8" r="7" stroke="currentColor" stroke-width="1.5" />
-            <line x1="4.5" y1="8" x2="11.5" y2="8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
-          </svg>
-          Eliminar pregunta
-        </button>
-      </div>
+      <div class="preguntas-seccion">
+        <label>Preguntas</label>
 
-      <button class="btn-agregar" type="button" (click)="agregarPregunta()">+ Agregar pregunta</button>
-    </div>
-
-    <div class="editor__divisor"></div>
-
-    <div class="editor__respuestas">
-      <h2>Respuestas</h2>
-
-      <div class="respuesta-item" [class.respuesta-item--correcta]="respuesta.correcta" *ngFor="let respuesta of respuestasActuales; let i = index">
-        <div class="respuesta-item__fila">
-          <span class="pregunta-item__numero">{{ i + 1 }}</span>
-          <input class="input-gyced" type="text" placeholder="Escribe aquí" [(ngModel)]="respuesta.texto" [name]="'respuesta' + i" />
-          <button class="respuesta-item__marcar" type="button" (click)="marcarCorrecta(i)" [attr.aria-pressed]="respuesta.correcta">
-            <img *ngIf="respuesta.correcta" src="img/icon_corre.png" alt="Correcta" />
+        <div
+          class="pregunta-fila"
+          [class.pregunta-fila--activa]="i === indiceActual"
+          *ngFor="let pregunta of preguntas; let i = index"
+          (click)="seleccionarPregunta(i)"
+        >
+          <span class="pregunta-fila__numero">{{ i + 1 }}.</span>
+          <input
+            class="input-gyced"
+            type="text"
+            placeholder="Escribe aquí..."
+            [(ngModel)]="pregunta.texto"
+            [name]="'pregunta' + i"
+          />
+          <button class="quitar" type="button" (click)="quitarPregunta(i); $event.stopPropagation()" aria-label="Eliminar pregunta">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="8" cy="8" r="7" stroke="currentColor" stroke-width="1.5" />
+              <line x1="4.5" y1="8" x2="11.5" y2="8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
+            </svg>
           </button>
         </div>
-        <button class="quitar quitar--respuesta" type="button" (click)="quitarRespuesta(i)">
-          <svg class="quitar__icono" width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+
+        <button class="btn-agregar" type="button" (click)="agregarPregunta()">+ Agregar pregunta</button>
+      </div>
+    </div>
+
+    <div class="tarjeta__respuestas">
+      <label>Respuestas</label>
+
+      <div
+        class="respuesta-fila"
+        [class.respuesta-fila--correcta]="respuesta.correcta"
+        *ngFor="let respuesta of respuestasActuales; let i = index"
+      >
+        <input
+          class="input-gyced"
+          type="text"
+          placeholder="Escribe aquí..."
+          [(ngModel)]="respuesta.texto"
+          [name]="'respuesta' + i"
+        />
+        <button
+          type="button"
+          class="respuesta-fila__check"
+          (click)="marcarCorrecta(i)"
+          [attr.aria-label]="respuesta.correcta ? 'Respuesta correcta' : 'Marcar como correcta'"
+        >
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M3 8.5L6.5 12L13 4.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+          </svg>
+        </button>
+        <button class="quitar quitar--respuesta" type="button" (click)="quitarRespuesta(i)" aria-label="Eliminar respuesta">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
             <circle cx="8" cy="8" r="7" stroke="currentColor" stroke-width="1.5" />
             <line x1="4.5" y1="8" x2="11.5" y2="8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
           </svg>
-          Eliminar respuesta
         </button>
       </div>
 
-      <button class="link-agregar" type="button" (click)="agregarRespuesta()">+ Agregar respuesta</button>
-
-      <button class="boton-generar" type="button" (click)="generarExamen()">Generar</button>
+      <button class="btn-agregar-respuesta" type="button" (click)="agregarRespuesta()">
+        <span class="btn-agregar-respuesta__icono">+</span> Agregar respuesta
+      </button>
     </div>
   </div>
+
+  <button class="boton-generar" type="button" (click)="generarExamen()">Generar examen</button>
 
   <div class="modal-lectura" *ngIf="mostrarModalLectura">
     <div class="modal-lectura__caja">

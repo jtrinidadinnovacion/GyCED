@@ -1,9 +1,10 @@
 <div class="pantalla fondo-gyced">
   <header class="cabecera">
     <img class="logo" src="img/icono.png" alt="" />
-    <h1 class="titulo-pagina">
-      <span class="ingresa">Ingresa</span>&nbsp;<span class="tus-datos">tus datos</span>
-    </h1>
+    <div class="titulos">
+      <h1>GyCED</h1>
+      <p>Ingresa tus datos</p>
+    </div>
 
     <app-ventana-controles class="controles" />
   </header>
@@ -72,38 +73,9 @@
         </div>
       </div>
 
-      <label for="tipo-evaluacion">Tipo de evaluación:</label>
-      <div class="select-tipo">
-        <button
-          id="tipo-evaluacion"
-          type="button"
-          class="select-tipo__trigger"
-          (click)="toggleDropdown()"
-        >
-          <span>{{ tipoSeleccionado || 'Elige una opción' }}</span>
-          <span class="select-tipo__flecha"></span>
-        </button>
-
-        <ul class="select-tipo__lista" *ngIf="dropdownAbierto">
-          <li *ngFor="let tipo of tiposEvaluacion" (click)="seleccionarTipo(tipo)">{{ tipo }}</li>
-        </ul>
-      </div>
-
       <button class="boton-generar" type="button" (click)="continuar()">Continuar</button>
     </form>
 
     <img class="ilustracion" src="img/img_datos.png" alt="" />
-  </div>
-
-  <div class="modal-relacion" *ngIf="mostrarModalRelacion">
-    <button class="modal-relacion__cerrar" type="button" (click)="mostrarModalRelacion = false">✕</button>
-
-    <div class="tarjetas">
-      <div class="tarjeta" *ngFor="let tipo of tiposRelacion">
-        <img class="tarjeta__icono" src="img/img_relacion.png" alt="" />
-        <p class="tarjeta__titulo">{{ tipo.titulo }}</p>
-        <button class="tarjeta__boton" type="button" (click)="elegirRelacion(tipo)">Realizar Evaluación</button>
-      </div>
-    </div>
   </div>
 </div>

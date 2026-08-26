@@ -27,3 +27,15 @@
   height: 720px;
   transform-origin: top left;
 }
+
+@media print {
+  /* La vista previa del examen se reubica al final de <body> (ver
+     GenExamen), fuera de este lienzo escalado, para poder ocupar toda
+     la hoja impresa. Si no se oculta el lienzo aquí, su fondo (con
+     degradado) queda visible detrás/alrededor de cada página del PDF,
+     y su alto de 100vh desplaza hacia abajo el contenido del examen,
+     rompiendo los saltos de página calculados. */
+  :host {
+    display: none;
+  }
+}

@@ -28,7 +28,10 @@ export class PreAbiertas {
     private cdr: ChangeDetectorRef,
     private examenesService: ExamenesService,
     public router: Router,
-  ) {}
+  ) {
+    this.tituloExamen = this.datos.tituloExamen || '';
+    this.instrucciones = this.datos.instrucciones || '';
+  }
 
   agregarPregunta() {
     this.preguntas.push({ texto: '' });

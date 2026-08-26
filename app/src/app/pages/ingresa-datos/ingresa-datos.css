@@ -2,7 +2,7 @@
   position: relative;
   width: 1280px;
   height: 100%;
-  padding: 2rem 2.5rem;
+  padding: 1rem 1.2rem;
   overflow: hidden;
 }
 
@@ -10,52 +10,62 @@
   display: flex;
   align-items: center;
   gap: 1rem;
-  margin-bottom: 1.5rem;
+  margin-bottom: 0.4rem;
+  margin-left: -1rem;
+  padding-left: 0;
 }
 
 .logo {
-  width: 70px;
-  height: 70px;
+  width: 80px;
+  height: 80px;
   object-fit: contain;
   flex-shrink: 0;
 }
 
-.titulo-pagina {
+.titulos h1 {
   margin: 0;
   font-family: 'Goldplay', sans-serif;
-  font-weight: 600;
-  font-size: 3rem;
+  font-weight: 900;
+  font-size: 2.8rem;
+  color: #030233;
+  line-height: 1.1;
+  -webkit-text-stroke: 1px #030233;
 }
 
-.titulo-pagina .ingresa {
+.titulos p {
+  margin: 0;
+  font-family: 'Goldplay', sans-serif;
+  font-weight: 500;
+  font-size: 1.30rem;
   color: #4361ee;
-}
-
-.titulo-pagina .tus-datos {
-  color: #002e5b;
 }
 
 .controles {
   margin-left: auto;
+  margin-right: 14.6rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
 }
 
 .pasos {
   position: relative;
   display: flex;
   align-items: center;
-  justify-content: center;
-  gap: 4.5rem;
-  margin-bottom: 2rem;
-  margin-bottom: 2rem;
+  justify-content: flex-end;
+  gap: 2rem;
+  margin-bottom: 1rem;
+  padding-right: 0rem;
+  width: 100%;
 }
 
 .pasos__linea {
   position: absolute;
-  left: -0.2rem;
-  right: -0.2rem;
+  left: 0;
+  right: 0;
   top: 50%;
-  height: 2px;
-  background: rgba(122, 84, 255, 0.35);
+  height: 1px;
+  background: #7A54FF;
   transform: translateY(-50%);
   z-index: 0;
 }
@@ -65,28 +75,31 @@
   z-index: 1;
   display: flex;
   align-items: center;
-  gap: 1.2rem;
-  padding: 0.65rem 1.6rem;
+  justify-content: center;
+  gap: 0.6rem;
+  height: 42px;
+  padding: 0 1.1rem;
+  box-sizing: border-box;
   border-radius: 999px;
   font-family: 'Goldplay', sans-serif;
   font-weight: 600;
-  font-size: 1.5rem;
-  transform: translateX(14rem);
+  font-size: 1.15rem;
 }
 
 .paso__numero {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 30px;
-  height: 30px;
+  width: 24px;
+  height: 24px;
   border-radius: 50%;
-  font-size: 1.05rem;
+  font-size: 0.85rem;
 }
 
 .paso--ingresa {
-  background: rgba(122, 84, 255, 0.12);
+  background: #e6e8f3;
   color: #7a54ff;
+  border: 2px solid #7a54ff;
 }
 
 .paso--ingresa .paso__numero {
@@ -97,6 +110,7 @@
 .paso--ingresa.paso--activo {
   background: #7a54ff;
   color: #fff;
+  border: none;
 }
 
 .paso--ingresa.paso--activo .paso__numero {
@@ -131,14 +145,14 @@
   align-items: center;
   justify-content: space-between;
   gap: 2rem;
-  padding-left: 5rem;
+  padding-left: 2rem;
   height: calc(100% - 190px);
 }
 
 .formulario {
   display: flex;
   flex-direction: column;
-  max-width: 620px;
+  max-width: 550px;
   width: 100%;
   flex-shrink: 0;
   margin: 0;
@@ -179,98 +193,9 @@
 
 .fila .campo {
   flex: 1;
+  max-width: calc(50% - 1cm);
   display: flex;
   flex-direction: column;
-}
-
-.select-tipo {
-  position: relative;
-  margin-bottom: 1.23rem;
-}
-
-.select-tipo__trigger {
-  width: 100%;
-  display: flex;
-  align-items: stretch;
-  justify-content: space-between;
-  border: 2px solid #fff;
-  border-radius: 10px;
-  background: #ecedf3;
-  padding: 0 0 0 1.03rem;
-  height: 43px;
-  cursor: pointer;
-  overflow: hidden;
-}
-
-.select-tipo__trigger span:first-child {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-family: 'Goldplay', sans-serif;
-  font-size: 1.15rem;
-  color: #585e99;
-  text-align: center;
-}
-
-.select-tipo__flecha {
-  position: relative;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 43px;
-  height: 100%;
-  background: #89d616;
-  border-radius: 0 8px 8px 0; 
-  flex-shrink: 0;
-}
-
-.select-tipo__flecha::after {
-  content: '';
-  width: 10px;
-  height: 10px;
-  border-right: 3px solid #fff;
-  border-bottom: 3px solid #fff;
-  border-radius: 2px;
-  transform: rotate(45deg);
-  margin-top: -4px;
-}
-
-.select-tipo__lista {
-  position: absolute;
-  top: calc(100% + 0.5rem);
-  left: 0;
-  right: 0;
-  z-index: 5;
-  margin: 0;
-  padding: 0.5rem 0;
-  list-style: none;
-  max-height: 180px;
-  overflow-y: auto;
-  border-radius: 10px;
-  background: #ecedf3;
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
-}
-
-.select-tipo__lista::-webkit-scrollbar {
-  width: 6px;
-}
-
-.select-tipo__lista::-webkit-scrollbar-thumb {
-  background: #7a54ff;
-  border-radius: 999px;
-}
-
-.select-tipo__lista li {
-  padding: 0.6rem 1rem;
-  font-family: 'Goldplay', sans-serif;
-  font-size: 1.05rem;
-  color: #585e99;
-  text-align: center;
-  cursor: pointer;
-}
-
-.select-tipo__lista li:hover {
-  background: rgba(122, 84, 255, 0.12);
 }
 
 .boton-generar {
@@ -278,13 +203,13 @@
   min-width: 230px;
   height: 49px;
   padding: 0 1.44rem;
-  margin-top: 1.23rem;
+  margin-top: 2.23rem;
   border: none;
   cursor: pointer;
   background: url('/img/btn_generar.png') center / 100% 100% no-repeat;
   font-family: 'Goldplay', sans-serif;
   font-weight: 600;
-  font-size: 1.64rem;
+  font-size: 1.4rem;
   color: #fff;
 }
 
@@ -296,64 +221,3 @@
   object-fit: contain;
 }
 
-.modal-relacion {
-  position: fixed;
-  inset: 0;
-  z-index: 20;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: rgba(20, 20, 40, 0.55);
-  backdrop-filter: blur(3px);
-}
-
-.modal-relacion__cerrar {
-  position: absolute;
-  top: 1.5rem;
-  right: 1.5rem;
-  border: none;
-  background: none;
-  cursor: pointer;
-  font-size: 1.5rem;
-  color: #fff;
-}
-
-.tarjetas {
-  display: flex;
-  gap: 1.5rem;
-}
-
-.tarjeta {
-  background: #fff;
-  border-radius: 16px;
-  padding: 2rem 1.5rem;
-  width: 260px;
-  text-align: center;
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
-}
-
-.tarjeta__icono {
-  width: 90px;
-  height: auto;
-  margin-bottom: 1rem;
-}
-
-.tarjeta__titulo {
-  font-family: 'Goldplay', sans-serif;
-  font-weight: 600;
-  font-size: 1.05rem;
-  color: #002e5b;
-  margin: 0 0 1.25rem;
-}
-
-.tarjeta__boton {
-  border: 2px solid #7a54ff;
-  background: rgba(122, 84, 255, 0.1);
-  color: #7a54ff;
-  border-radius: 999px;
-  padding: 0.6rem 1.5rem;
-  font-family: 'Goldplay', sans-serif;
-  font-weight: 600;
-  font-size: 0.95rem;
-  cursor: pointer;
-}

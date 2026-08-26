@@ -208,24 +208,30 @@
   font-size: 0.95rem;
 }
 
-.tipo-badge {
+.select-tipo {
+  position: relative;
   flex-shrink: 0;
   width: 220px;
-  height: 41px;
   margin-bottom: 1rem;
+}
+
+.select-tipo__trigger {
+  width: 100%;
   display: flex;
   align-items: stretch;
   justify-content: space-between;
   border: 2px solid #fff;
   border-radius: 10px;
   background: #ecedf3;
+  padding: 0 0 0 1rem;
+  height: 41px;
+  cursor: pointer;
   overflow: hidden;
 }
 
-.tipo-badge span:first-child {
+.select-tipo__trigger span:first-child {
   display: flex;
   align-items: center;
-  padding-left: 1rem;
   font-family: 'Goldplay', sans-serif;
   font-size: 0.9rem;
   color: #585e99;
@@ -234,17 +240,19 @@
   text-overflow: ellipsis;
 }
 
-.tipo-badge__flecha {
+.select-tipo__flecha {
   position: relative;
   display: flex;
   align-items: center;
   justify-content: center;
   width: 41px;
-  flex-shrink: 0;
+  height: 100%;
   background: #89d616;
+  border-radius: 0 8px 8px 0;
+  flex-shrink: 0;
 }
 
-.tipo-badge__flecha::after {
+.select-tipo__flecha::after {
   content: '';
   width: 8px;
   height: 8px;
@@ -253,6 +261,43 @@
   border-radius: 2px;
   transform: rotate(45deg);
   margin-top: -4px;
+}
+
+.select-tipo__lista {
+  position: absolute;
+  top: calc(100% + 0.5rem);
+  left: 0;
+  right: 0;
+  z-index: 5;
+  margin: 0;
+  padding: 0.5rem 0;
+  list-style: none;
+  max-height: 180px;
+  overflow-y: auto;
+  border-radius: 10px;
+  background: #ecedf3;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+}
+
+.select-tipo__lista::-webkit-scrollbar {
+  width: 6px;
+}
+
+.select-tipo__lista::-webkit-scrollbar-thumb {
+  background: #7a54ff;
+  border-radius: 999px;
+}
+
+.select-tipo__lista li {
+  padding: 0.5rem 0.75rem;
+  font-family: 'Goldplay', sans-serif;
+  font-size: 0.9rem;
+  color: #585e99;
+  cursor: pointer;
+}
+
+.select-tipo__lista li:hover {
+  background: rgba(122, 84, 255, 0.12);
 }
 
 .separador {
@@ -268,64 +313,16 @@
   min-height: 0;
 }
 
-.pregunta-fila {
-  position: relative;
-  display: flex;
-  flex-shrink: 0;
-  align-items: center;
-  gap: 0.6rem;
-  margin-bottom: 0.6rem;
+.preguntas-lista,
+.preguntas-seccion {
+  overflow-y: auto;
 }
 
-.pregunta-fila__numero {
-  flex-shrink: 0;
+.preguntas-vacio {
   font-family: 'Goldplay', sans-serif;
-  font-weight: 600;
-  color: #585e99;
-  width: 1.2rem;
-}
-
-.pregunta-fila .input-gyced {
-  flex: 1;
-  padding: 0.6rem 1rem;
-  font-size: 0.9rem;
-}
-
-.btn-agregar {
-  align-self: center;
-  flex-shrink: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  min-width: 190px;
-  height: 42px;
-  border: none;
-  cursor: pointer;
-  background: url('/img/ini_btn.png') center / 100% 100% no-repeat;
-  color: #fff;
-  font-family: 'Goldplay', sans-serif;
-  font-weight: 600;
   font-size: 0.95rem;
-  padding: 0 1.5rem;
-  margin-top: 0.75rem;
-}
-
-.quitar {
-  flex-shrink: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 24px;
-  height: 24px;
-  border: none;
-  background: none;
-  cursor: pointer;
-  color: #b7bbd9;
-  padding: 0;
-}
-
-.quitar:hover {
-  color: #71a6f1;
+  color: #7d84c6;
+  margin: 0.5rem 0 0;
 }
 
 .ilustracion {
@@ -337,17 +334,75 @@
   align-self: center;
 }
 
-.boton-generar {
-  align-self: flex-end;
-  min-width: 230px;
-  height: 49px;
-  padding: 0 1.44rem;
-  margin-top: 1rem;
+.modal-relacion {
+  /* El lienzo (.escalador) tiene transform:scale, lo que lo convierte en el
+     "containing block" de todo lo fixed/absolute dentro de él — por eso
+     position:fixed + inset:0 solo cubría el lienzo y no la ventana real,
+     dejando sin teñir las franjas laterales cuando hay letterboxing.
+     Se usa un tamaño de sobra en vw/vh (no afectado por el transform del
+     padre en cuanto a unidades, solo en cuanto a posición) centrado para
+     garantizar que cubra toda la ventana sin importar el escalado. */
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  width: 400vw;
+  height: 400vh;
+  transform: translate(-50%, -50%);
+  z-index: 20;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(42, 67, 107, 0.6);
+  backdrop-filter: blur(3px);
+}
+
+.modal-relacion__cerrar {
+  position: absolute;
+  top: 1.5rem;
+  right: 1.5rem;
   border: none;
+  background: none;
   cursor: pointer;
-  background: url('/img/btn_generar.png') center / 100% 100% no-repeat;
+  font-size: 1.5rem;
+  color: #fff;
+}
+
+.tarjetas {
+  display: flex;
+  gap: 1.5rem;
+}
+
+.tarjeta-relacion {
+  background: #fff;
+  border-radius: 16px;
+  padding: 2rem 1.5rem;
+  width: 260px;
+  text-align: center;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+}
+
+.tarjeta-relacion__icono {
+  width: 90px;
+  height: auto;
+  margin-bottom: 1rem;
+}
+
+.tarjeta-relacion__titulo {
   font-family: 'Goldplay', sans-serif;
   font-weight: 600;
-  font-size: 1.3rem;
-  color: #fff;
+  font-size: 1.05rem;
+  color: #002e5b;
+  margin: 0 0 1.25rem;
+}
+
+.tarjeta-relacion__boton {
+  border: 2px solid #7a54ff;
+  background: rgba(122, 84, 255, 0.1);
+  color: #7a54ff;
+  border-radius: 999px;
+  padding: 0.6rem 1.5rem;
+  font-family: 'Goldplay', sans-serif;
+  font-weight: 600;
+  font-size: 0.95rem;
+  cursor: pointer;
 }

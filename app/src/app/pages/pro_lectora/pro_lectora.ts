@@ -47,7 +47,10 @@ export class ProLectora {
     private cdr: ChangeDetectorRef,
     private examenesService: ExamenesService,
     public router: Router,
-  ) {}
+  ) {
+    this.tituloExamen = this.datos.tituloExamen || '';
+    this.instrucciones = this.datos.instrucciones || '';
+  }
 
   get respuestasActuales(): Respuesta[] {
     return this.preguntas[this.indiceActual].respuestas;
